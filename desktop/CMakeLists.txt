@@ -14,6 +14,7 @@ qt_add_qml_module(lastfm-stats
         qml/Theme.qml
         qml/Api.qml
         qml/Chip.qml
+        qml/Cover.qml
         qml/PeriodBar.qml
         qml/RecentView.qml
         qml/TopView.qml

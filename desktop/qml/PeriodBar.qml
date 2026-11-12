@@ -24,16 +24,17 @@ Flow {
 
     component DateField: TextField {
         visible: bar.period === "custom"
-        width: 120
-        height: 30
+        width: 124
+        height: 34
+        leftPadding: 12
         placeholderText: "YYYY-MM-DD"
         color: Theme.text
         placeholderTextColor: Theme.muted
         font.pixelSize: 13
         background: Rectangle {
-            radius: 8
-            color: Theme.card
-            border.color: parent.activeFocus ? Theme.accent : Theme.line
+            radius: 14
+            color: Theme.surface
+            border.color: parent.activeFocus ? Theme.pink : "transparent"
         }
     }
     DateField { text: bar.fromText; onEditingFinished: bar.fromText = text }

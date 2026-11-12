@@ -19,6 +19,12 @@ Last.fm only offers top lists for fixed periods and is slow. The Worker copies e
 - `app.js`, `style.css`, `index.html` – phone site.
 - `desktop/qml/*.qml`, `desktop/main.cpp` – desktop app.
 
+## Look
+Tinted dark surfaces with pink as the main accent and baby blue as the second (light variants follow the system). Big rounded shapes, pill chips, one loud gradient card for now playing, a hero card for number one in Top. Charts: bars are pink, the listening clock is blue. Motion is short on purpose: 200 ms fades and an 8 px rise, nothing travels across the screen.
+- Colours live in `style.css` (`:root`) and `desktop/qml/Theme.qml`: change both together.
+- Font is Rubik (Google Fonts on the site, the installed font on the desktop). Desktop sidebar icons are ligatures of the installed Material Symbols Rounded font.
+- `desktop/qml/Cover.qml` rounds album art with a `MultiEffect` mask, which needs a GPU: with `QT_QUICK_BACKEND=software` covers stay blank.
+
 ## Worker API
 All `GET`, JSON, public. `from`/`to` are unix seconds (`from` inclusive, `to` exclusive, default: everything up to now).
 

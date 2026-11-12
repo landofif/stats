@@ -71,6 +71,7 @@ Item {
                     required property var modelData
                     text: modelData[1]
                     selected: view.type === modelData[0]
+                    tint: Theme.blue
                     onClicked: view.type = modelData[0]
                 }
             }
@@ -97,38 +98,88 @@ Item {
         boundsBehavior: Flickable.StopAtBounds
         ScrollBar.vertical: ScrollBar {}
 
+        spacing: 4
+
+        // Number one is a hero card; two and three get a blue badge.
         delegate: Rectangle {
+            id: row
             required property int rank
             required property string name
             required property string sub
             required property int plays
+            readonly property bool hero: rank === 1
+            readonly property color ink: hero ? Theme.onAccent : Theme.text
             width: list.width
-            height: 52
-            color: Theme.card
+            height: hero ? 84 : 56
+            radius: hero ? 28 : 16
+            color: hero ? Theme.pink : Theme.surface
 
-            Text { id: rankText; x: 8; width: 30; anchors.verticalCenter: parent.verticalCenter; horizontalAlignment: Text.AlignRight; text: rank; color: Theme.muted; font.pixelSize: 13 }
-            Column {
-                anchors { left: rankText.right; right: playsText.left; margins: 14; verticalCenter: parent.verticalCenter }
-                spacing: 2
+            Rectangle {
+                id: badge
+                x: 14
+                anchors.verticalCenter: parent.verticalCenter
+                width: row.hero ? 38 : 28
+                height: width
+                radius: width / 2
+                color: row.hero ? Theme.onAccent : row.rank <= 3 ? Theme.blueSoft : Theme.surface2
                 Text {
+                    anchors.centerIn: parent
+                    text: row.rank
+                    color: row.hero ? Theme.pink : row.rank <= 3 ? Theme.blue : Theme.muted
+                    font.pixelSize: row.hero ? 16 : 12
+                    font.weight: Font.DemiBold
+                }
+            }
+            Column {
+                anchors { left: badge.right; right: playsText.left; margins: 14; verticalCenter: parent.verticalCenter }
+                spacing: 3
+                Text {
+                    width: parent.width - (subText.visible ? subText.width + 16 : 0)
+                    elide: Text.ElideRight
+                    textFormat: Text.PlainText
+                    text: row.name
+                    color: row.ink
+                    font.pixelSize: row.hero ? 20 : 14
+                    font.weight: row.hero ? Font.Bold : Font.DemiBold
+                }
+                Text {
+                    visible: row.sub !== "" && row.hero
                     width: parent.width
                     elide: Text.ElideRight
                     textFormat: Text.PlainText
-                    text: sub ? name + "  ·  " + sub : name
-                    color: Theme.text
-                    font.pixelSize: 14
-                    font.weight: Font.DemiBold
+                    text: row.sub
+                    color: row.ink
+                    opacity: 0.8
+                    font.pixelSize: 13
                 }
                 Rectangle {
+                    visible: !row.hero
                     width: parent.width
-                    height: 3
+                    height: 4
                     radius: 2
-                    color: Theme.line
-                    Rectangle { width: parent.width * plays / view.max; height: parent.height; radius: 2; color: Theme.accent }
+                    color: Theme.surface2
+                    Rectangle { width: parent.width * row.plays / view.max; height: parent.height; radius: 2; color: Theme.pink }
                 }
             }
-            Text { id: playsText; anchors { right: parent.right; rightMargin: 14; verticalCenter: parent.verticalCenter } text: Api.num(plays); color: Theme.muted; font.pixelSize: 13 }
-            Rectangle { width: parent.width; height: 1; color: Theme.line; anchors.bottom: parent.bottom }
+            Text {
+                id: subText
+                visible: row.sub !== "" && !row.hero
+                anchors { right: playsText.left; rightMargin: 18; top: parent.top; topMargin: 12 }
+                width: Math.min(implicitWidth, parent.width * 0.35)
+                elide: Text.ElideRight
+                textFormat: Text.PlainText
+                text: row.sub
+                color: Theme.muted
+                font.pixelSize: 13
+            }
+            Text {
+                id: playsText
+                anchors { right: parent.right; rightMargin: 18; verticalCenter: parent.verticalCenter }
+                text: Api.num(row.plays)
+                color: row.hero ? row.ink : Theme.muted
+                font.pixelSize: row.hero ? 20 : 13
+                font.weight: row.hero ? Font.Bold : Font.Normal
+            }
         }
     }
 }

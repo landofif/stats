@@ -8,11 +8,13 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Stats">
-  <meta name="theme-color" content="#f4f5f8" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#111318" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#fdf3f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#15121b" media="(prefers-color-scheme: dark)">
   <link rel="apple-touch-icon" href="icon-180.png">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..800&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,11 +24,11 @@
   </header>
   <div id="controls"></div>
   <main id="content"></main>
-  <footer id="tabs">
-    <button data-view="recent">Recent</button>
-    <button data-view="top">Top</button>
-    <button data-view="trends">Trends</button>
-  </footer>
+  <nav id="tabs">
+    <button data-view="recent"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Recent</button>
+    <button data-view="top"><svg viewBox="0 0 24 24"><path d="M4 18h16l1-10-5 4-4-7-4 7-5-4z"/></svg>Top</button>
+    <button data-view="trends"><svg viewBox="0 0 24 24"><path d="M5 20v-7M12 20V4M19 20v-11"/></svg>Trends</button>
+  </nav>
   <script src="app.js"></script>
 </body>
 </html>

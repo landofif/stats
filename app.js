@@ -39,6 +39,8 @@ let drawId = 0;
 async function load(path, draw, live = false) {
   const id = ++drawId;
   const hit = cache.get(path);
+  // New content fades in; a background refresh of what is already shown does not.
+  $('#content').classList.add('enter');
   if (hit) draw(hit.data);
   else $('#content').replaceChildren(h('p', { class: 'hint' }, 'Loading…'));
   if (hit && !live && Date.now() - hit.at < 60e3) return;
@@ -47,7 +49,9 @@ async function load(path, draw, live = false) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error ?? res.status);
     cache.set(path, { data, at: Date.now() });
-    if (id === drawId) draw(data);
+    if (id !== drawId) return;
+    if (hit) $('#content').classList.remove('enter');
+    draw(data);
   } catch (err) {
     if (id === drawId && !hit) $('#content').replaceChildren(h('p', { class: 'hint' }, `Could not load: ${err.message}`));
   }
@@ -104,7 +108,7 @@ function showRecent() {
     const out = [];
     if (nowPlaying) {
       out.push(h('div', { class: 'card playing' }, art(nowPlaying.image), h('div', { class: 'text' },
-        h('div', { class: 'label' }, 'Now playing'),
+        h('div', { class: 'label' }, h('span', { class: 'eq' }, h('i'), h('i'), h('i')), 'Now playing'),
         h('div', { class: 'name' }, nowPlaying.track),
         h('div', { class: 'sub' }, nowPlaying.artist))));
     }
@@ -140,7 +144,7 @@ function showTop() {
   load(`/top?type=${state.type}&limit=100&${query(r)}`, ({ items }) => {
     if (!items.length) return $('#content').replaceChildren(h('p', { class: 'hint' }, 'Nothing in this period.'));
     const max = items[0].plays;
-    $('#content').replaceChildren(h('div', { class: 'rows' }, items.map((item, i) => h('div', { class: 'row' },
+    $('#content').replaceChildren(h('div', { class: 'rows top' }, items.map((item, i) => h('div', { class: 'row' },
       h('div', { class: 'rank' }, String(i + 1)),
       h('div', { class: 'text' },
         h('div', { class: 'name' }, item.track ?? item.album ?? item.artist),
@@ -205,7 +209,7 @@ function showTrends() {
       grid.append(h('div', { class: 'day' }, DAYS[dow]), ...clock[dow].map((n, hour) => h('button', {
         ...cell(`${DAYS[dow]} ${String(hour).padStart(2, '0')}:00`, num(n)),
         // One hue, light to dark; empty hours keep the neutral cell colour.
-        style: n ? `background: color-mix(in oklab, var(--accent) ${Math.round(15 + 85 * (n / clockMax))}%, var(--card))` : null,
+        style: n ? `background: color-mix(in oklab, var(--blue) ${Math.round(15 + 85 * (n / clockMax))}%, var(--surface-2))` : null,
       })));
     }
     grid.append(h('div', {}), ...['00', '06', '12', '18'].map((t) => h('div', { class: 'hour' }, t)));

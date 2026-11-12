@@ -1,3 +1,4 @@
+#include <QFont>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
@@ -10,6 +11,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("lastfm-stats");
     app.setDesktopFileName("lastfm-stats");
     QQuickStyle::setStyle("Basic");
+    app.setFont(QFont("Rubik")); // falls back to the system font if it is not installed
 
     QQmlApplicationEngine engine;
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed, &app,

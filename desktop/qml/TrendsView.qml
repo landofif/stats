@@ -79,28 +79,28 @@ Item {
         property string title
         width: parent.width
         height: inner.height + 28
-        radius: 14
-        color: Theme.card
+        radius: 24
+        color: Theme.surface
         Column {
             id: inner
-            x: 14
+            x: 18
             y: 14
-            width: parent.width - 28
+            width: parent.width - 36
             spacing: 8
-            Text { text: title.toUpperCase(); color: Theme.muted; font.pixelSize: 12; font.weight: Font.DemiBold; font.letterSpacing: 0.5 }
+            Text { text: title; color: Theme.muted; font.pixelSize: 13; font.weight: Font.DemiBold }
         }
     }
     component Tile: Rectangle {
         property string value
         property string label
-        width: 150
-        height: 62
-        radius: 14
-        color: Theme.card
+        property color ink: Theme.text
+        width: 160
+        height: 70
+        radius: 22
         Column {
-            x: 12
+            x: 16
             anchors.verticalCenter: parent.verticalCenter
-            Text { text: value; color: Theme.text; font.pixelSize: 20; font.bold: true }
+            Text { text: value; color: ink; font.pixelSize: 22; font.bold: true }
             Text { text: label; color: Theme.muted; font.pixelSize: 12 }
         }
     }
@@ -134,9 +134,9 @@ Item {
 
             Row {
                 spacing: 8
-                Tile { value: Api.num(view.plays); label: "Scrobbles" }
-                Tile { value: (view.plays / Math.max(1, view.days)).toFixed(1); label: "Per day" }
-                Tile { value: view.hourText(view.peak); label: "Peak hour" }
+                Tile { value: Api.num(view.plays); label: "Scrobbles"; color: Theme.pinkSoft; ink: Theme.pink }
+                Tile { value: (view.plays / Math.max(1, view.days)).toFixed(1); label: "Per day"; color: Theme.blueSoft; ink: Theme.blue }
+                Tile { value: view.hourText(view.peak); label: "Peak hour"; color: Theme.surface }
             }
 
             Card {
@@ -166,10 +166,10 @@ Item {
                                 anchors.bottom: parent.bottom
                                 width: parent.width
                                 height: Math.max(1, parent.height * modelData.plays / view.max)
-                                topLeftRadius: Math.min(4, width / 2)
-                                topRightRadius: Math.min(4, width / 2)
-                                color: Theme.accent
-                                opacity: view.hoverBar === index ? 1 : 0.75
+                                topLeftRadius: Math.min(6, width / 2)
+                                topRightRadius: Math.min(6, width / 2)
+                                color: view.hoverBar === index ? Theme.blue : Theme.pink
+                                opacity: view.hoverBar === index ? 1 : 0.8
                             }
                             HoverHandler {
                                 onHoveredChanged: view.hoverBar = hovered ? index : view.hoverBar === index ? -1 : view.hoverBar
@@ -177,7 +177,7 @@ Item {
                         }
                     }
                 }
-                Rectangle { width: parent.width; height: 1; color: Theme.line }
+                Rectangle { width: parent.width; height: 2; radius: 1; color: Theme.surface2 }
                 Item {
                     width: parent.width
                     height: 16
@@ -215,18 +215,18 @@ Item {
                             height: grid.cell
                             Text { visible: hour < 0; anchors.verticalCenter: parent.verticalCenter; text: view.dayNames[dow]; color: Theme.muted; font.pixelSize: 11 }
                             // One hue, light to dark; empty hours keep the neutral colour.
-                            Rectangle { visible: hour >= 0; anchors.fill: parent; radius: 3; color: Theme.line }
+                            Rectangle { visible: hour >= 0; anchors.fill: parent; radius: width * 0.3; color: Theme.surface2 }
                             Rectangle {
                                 visible: hour >= 0 && plays > 0
                                 anchors.fill: parent
-                                radius: 3
-                                color: Theme.accent
+                                radius: width * 0.3
+                                color: Theme.blue
                                 opacity: 0.15 + 0.85 * plays / view.clockMax
                             }
                             Rectangle {
                                 visible: hour >= 0 && view.hoverCell === dow * 24 + hour
                                 anchors.fill: parent
-                                radius: 3
+                                radius: width * 0.3
                                 color: "transparent"
                                 border.color: Theme.text
                                 border.width: 2

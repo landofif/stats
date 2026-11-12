@@ -5,15 +5,16 @@ import QtQuick.Layouts
 
 ApplicationWindow {
     id: window
-    width: 980
-    height: 700
-    minimumWidth: 720
-    minimumHeight: 480
+    width: 1000
+    height: 720
+    minimumWidth: 760
+    minimumHeight: 500
     visible: true
     title: "Stats"
     color: Theme.bg
 
-    readonly property var views: ["Recent", "Top", "Trends"]
+    // Icons are ligature names in the Material Symbols Rounded font.
+    readonly property var views: [["Recent", "schedule"], ["Top", "trophy"], ["Trends", "bar_chart"]]
     property int current: 0
     property string syncText: ""
 
@@ -38,14 +39,24 @@ ApplicationWindow {
     Shortcut { sequence: "3"; onActivated: window.current = 2 }
     Shortcut { sequences: ["F5", "Ctrl+R"]; onActivated: { stack.children[window.current].reload(); window.refreshSync() } }
 
+    // A view fades in and rises a few pixels.
+    onCurrentChanged: enter.restart()
+    ParallelAnimation {
+        id: enter
+        NumberAnimation { target: stack; property: "opacity"; from: 0; to: 1; duration: Theme.motion; easing.type: Easing.OutQuint }
+        NumberAnimation { target: rise; property: "y"; from: 8; to: 0; duration: Theme.motion; easing.type: Easing.OutQuint }
+    }
+
     RowLayout {
         anchors.fill: parent
-        spacing: 0
+        anchors.margins: 12
+        spacing: 20
 
         Rectangle {
             Layout.fillHeight: true
-            Layout.preferredWidth: 180
-            color: Theme.card
+            Layout.preferredWidth: 190
+            radius: 28
+            color: Theme.surface
 
             ColumnLayout {
                 anchors.fill: parent
@@ -53,45 +64,54 @@ ApplicationWindow {
                 spacing: 4
 
                 Text {
-                    text: "Stats"
+                    text: "Stats<font color=\"" + Theme.pink + "\">.</font>"
+                    textFormat: Text.StyledText
                     color: Theme.text
-                    font.pixelSize: 20
-                    font.bold: true
-                    Layout.margins: 6
-                    Layout.bottomMargin: 10
+                    font.pixelSize: 28
+                    font.weight: Font.ExtraBold
+                    Layout.margins: 10
+                    Layout.bottomMargin: 14
                 }
                 Repeater {
                     model: window.views
                     AbstractButton {
                         id: nav
-                        required property string modelData
+                        required property var modelData
                         required property int index
                         readonly property bool selected: window.current === index
+                        readonly property color ink: selected ? Theme.onAccent : Theme.muted
                         Layout.fillWidth: true
-                        implicitHeight: 34
+                        implicitHeight: 44
                         onClicked: window.current = index
-                        contentItem: Text {
-                            text: nav.modelData
-                            leftPadding: 10
-                            color: nav.selected ? Theme.accent : Theme.text
-                            font.pixelSize: 14
-                            font.weight: nav.selected ? Font.DemiBold : Font.Normal
-                            verticalAlignment: Text.AlignVCenter
+                        contentItem: Row {
+                            leftPadding: 14
+                            spacing: 10
+                            Text { anchors.verticalCenter: parent.verticalCenter; text: nav.modelData[1]; color: nav.ink; font.family: "Material Symbols Rounded"; font.pixelSize: 22 }
+                            Text { anchors.verticalCenter: parent.verticalCenter; text: nav.modelData[0]; color: nav.ink; font.pixelSize: 14; font.weight: nav.selected ? Font.DemiBold : Font.Medium }
                         }
                         background: Rectangle {
-                            radius: 8
-                            color: nav.selected ? Theme.accentSoft : nav.hovered ? Theme.line : "transparent"
+                            radius: height / 2
+                            color: nav.selected ? Theme.pink : nav.hovered ? Theme.surface2 : "transparent"
+                            Behavior on color { ColorAnimation { duration: Theme.motion } }
                         }
                     }
                 }
                 Item { Layout.fillHeight: true }
-                Text {
-                    text: window.syncText
-                    color: Theme.muted
-                    font.pixelSize: 12
-                    wrapMode: Text.WordWrap
+                Rectangle {
+                    visible: window.syncText !== ""
                     Layout.fillWidth: true
-                    Layout.margins: 6
+                    implicitHeight: syncLabel.implicitHeight + 16
+                    radius: 18
+                    color: Theme.blueSoft
+                    Text {
+                        id: syncLabel
+                        anchors { left: parent.left; right: parent.right; margins: 12; verticalCenter: parent.verticalCenter }
+                        text: window.syncText
+                        color: Theme.blue
+                        font.pixelSize: 12
+                        font.weight: Font.Medium
+                        wrapMode: Text.WordWrap
+                    }
                 }
             }
         }
@@ -100,8 +120,10 @@ ApplicationWindow {
             id: stack
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.margins: 20
+            Layout.topMargin: 8
+            Layout.rightMargin: 8
             currentIndex: window.current
+            transform: Translate { id: rise }
 
             RecentView {}
             TopView {}
