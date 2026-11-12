@@ -32,7 +32,6 @@ Flow {
         placeholderTextColor: Theme.muted
         font.pixelSize: 13
         background: Rectangle {
-            radius: 14
             color: Theme.surface
             border.color: parent.activeFocus ? Theme.pink : "transparent"
         }

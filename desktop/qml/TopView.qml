@@ -111,7 +111,6 @@ Item {
             readonly property color ink: hero ? Theme.onAccent : Theme.text
             width: list.width
             height: hero ? 84 : 56
-            radius: hero ? 28 : 16
             color: hero ? Theme.pink : Theme.surface
 
             Rectangle {
@@ -120,7 +119,6 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 width: row.hero ? 38 : 28
                 height: width
-                radius: width / 2
                 color: row.hero ? Theme.onAccent : row.rank <= 3 ? Theme.blueSoft : Theme.surface2
                 Text {
                     anchors.centerIn: parent
@@ -156,9 +154,8 @@ Item {
                     visible: !row.hero
                     width: parent.width
                     height: 4
-                    radius: 2
                     color: Theme.surface2
-                    Rectangle { width: parent.width * row.plays / view.max; height: parent.height; radius: 2; color: Theme.pink }
+                    Rectangle { width: parent.width * row.plays / view.max; height: parent.height; color: Theme.pink }
                 }
             }
             Text {

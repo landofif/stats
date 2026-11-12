@@ -61,13 +61,12 @@ Item {
             Rectangle {
                 width: parent.width
                 height: 100
-                radius: 28
                 gradient: Gradient {
                     orientation: Gradient.Horizontal
                     GradientStop { position: 0; color: Theme.pink }
                     GradientStop { position: 1; color: Theme.blue }
                 }
-                Cover { id: cover; x: 14; y: 14; width: 72; height: 72; radius: 18; source: view.nowPlaying ? view.nowPlaying.image : "" }
+                Cover { id: cover; x: 14; y: 14; width: 72; height: 72; source: view.nowPlaying ? view.nowPlaying.image : "" }
                 Column {
                     anchors { left: cover.right; right: parent.right; margins: 16; verticalCenter: parent.verticalCenter }
                     spacing: 1
@@ -97,7 +96,6 @@ Item {
             required property string time
             width: list.width
             height: 60
-            radius: 16
             color: Theme.surface
             Cover { id: art; x: 10; anchors.verticalCenter: parent.verticalCenter; width: 44; height: 44; source: parent.image }
             Column {

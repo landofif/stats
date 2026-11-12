@@ -22,7 +22,6 @@ AbstractButton {
         verticalAlignment: Text.AlignVCenter
     }
     background: Rectangle {
-        radius: height / 2
         color: chip.selected ? chip.tint : chip.hovered ? Theme.surface2 : Theme.surface
         Behavior on color { ColorAnimation { duration: Theme.motion } }
     }

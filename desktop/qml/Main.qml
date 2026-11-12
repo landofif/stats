@@ -55,7 +55,6 @@ ApplicationWindow {
         Rectangle {
             Layout.fillHeight: true
             Layout.preferredWidth: 190
-            radius: 28
             color: Theme.surface
 
             ColumnLayout {
@@ -90,7 +89,6 @@ ApplicationWindow {
                             Text { anchors.verticalCenter: parent.verticalCenter; text: nav.modelData[0]; color: nav.ink; font.pixelSize: 14; font.weight: nav.selected ? Font.DemiBold : Font.Medium }
                         }
                         background: Rectangle {
-                            radius: height / 2
                             color: nav.selected ? Theme.pink : nav.hovered ? Theme.surface2 : "transparent"
                             Behavior on color { ColorAnimation { duration: Theme.motion } }
                         }
@@ -101,7 +99,6 @@ ApplicationWindow {
                     visible: window.syncText !== ""
                     Layout.fillWidth: true
                     implicitHeight: syncLabel.implicitHeight + 16
-                    radius: 18
                     color: Theme.blueSoft
                     Text {
                         id: syncLabel

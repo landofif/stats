@@ -79,7 +79,6 @@ Item {
         property string title
         width: parent.width
         height: inner.height + 28
-        radius: 24
         color: Theme.surface
         Column {
             id: inner
@@ -96,7 +95,6 @@ Item {
         property color ink: Theme.text
         width: 160
         height: 70
-        radius: 22
         Column {
             x: 16
             anchors.verticalCenter: parent.verticalCenter
@@ -166,8 +164,6 @@ Item {
                                 anchors.bottom: parent.bottom
                                 width: parent.width
                                 height: Math.max(1, parent.height * modelData.plays / view.max)
-                                topLeftRadius: Math.min(6, width / 2)
-                                topRightRadius: Math.min(6, width / 2)
                                 color: view.hoverBar === index ? Theme.blue : Theme.pink
                                 opacity: view.hoverBar === index ? 1 : 0.8
                             }
@@ -177,7 +173,7 @@ Item {
                         }
                     }
                 }
-                Rectangle { width: parent.width; height: 2; radius: 1; color: Theme.surface2 }
+                Rectangle { width: parent.width; height: 2; color: Theme.surface2 }
                 Item {
                     width: parent.width
                     height: 16
@@ -215,18 +211,16 @@ Item {
                             height: grid.cell
                             Text { visible: hour < 0; anchors.verticalCenter: parent.verticalCenter; text: view.dayNames[dow]; color: Theme.muted; font.pixelSize: 11 }
                             // One hue, light to dark; empty hours keep the neutral colour.
-                            Rectangle { visible: hour >= 0; anchors.fill: parent; radius: width * 0.3; color: Theme.surface2 }
+                            Rectangle { visible: hour >= 0; anchors.fill: parent; color: Theme.surface2 }
                             Rectangle {
                                 visible: hour >= 0 && plays > 0
                                 anchors.fill: parent
-                                radius: width * 0.3
                                 color: Theme.blue
                                 opacity: 0.15 + 0.85 * plays / view.clockMax
                             }
                             Rectangle {
                                 visible: hour >= 0 && view.hoverCell === dow * 24 + hour
                                 anchors.fill: parent
-                                radius: width * 0.3
                                 color: "transparent"
                                 border.color: Theme.text
                                 border.width: 2
