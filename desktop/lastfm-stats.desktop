@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Stats
+Comment=Last.fm listening stats
+Exec=lastfm-stats
+Icon=lastfm-stats
+Categories=AudioVideo;Audio;
+StartupWMClass=lastfm-stats

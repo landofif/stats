@@ -1,0 +1,18 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "lastfm-stats",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+  "triggers": { "crons": ["* * * * *"] },
+  "vars": {
+    "LASTFM_USER": "landofif",
+    // Local time for day/hour stats. Changing it only affects scrobbles imported afterwards.
+    "TZ_NAME": "Europe/Zurich"
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "lastfm-stats", "database_id": "a9d4becf-c056-4c1d-9adf-312df258106f" }
+  ]
+  // Secret (set with `wrangler secret put LASTFM_API_KEY --config worker/wrangler.jsonc`):
+  //   LASTFM_API_KEY
+}
