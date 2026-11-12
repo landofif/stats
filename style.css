@@ -100,6 +100,7 @@ h2 { font-size: 14px; font-weight: 600; color: var(--blue); margin: 18px 8px 8px
 .top .row:nth-child(-n+3) .rank { background: var(--blue-soft); color: var(--blue); }
 .top .row:first-child { background: var(--pink); color: var(--on-accent); padding: 18px 16px; margin-bottom: 6px; }
 .top .row:first-child .rank { background: var(--on-accent); color: var(--pink); width: 36px; height: 36px; font-size: 16px; }
+.top .row:first-child .art { width: 64px; height: 64px; background: rgb(0 0 0 / 0.15); }
 .top .row:first-child .name { font-size: 20px; font-weight: 700; }
 .top .row:first-child .sub, .top .row:first-child .side { color: inherit; opacity: 0.8; }
 .top .row:first-child .side { font-size: 18px; font-weight: 700; opacity: 1; }

@@ -16,7 +16,9 @@ export function fakeD1() {
   return { prepare: (sql) => stmt(sql) };
 }
 
-export const scrobble = (ts, artist = 'Artist', track = `Track ${ts}`, album = 'Album') => ({ ts, artist, track, album });
+export const IMG = 'https://img.example/large.jpg';
+export const scrobble = (ts, artist = 'Artist', track = `Track ${ts}`, album = 'Album', image = IMG) =>
+  ({ ts, artist, track, album, image });
 
 // `count` scrobbles, one every `step` seconds, ending at `end`.
 export const history = (count, end, step = 200) =>
@@ -26,7 +28,7 @@ const raw = (s, playing = false) => ({
   artist: { '#text': s.artist },
   name: s.track,
   album: { '#text': s.album },
-  image: [{ size: 'large', '#text': 'https://img.example/large.jpg' }],
+  image: [{ size: 'large', '#text': s.image ?? IMG }],
   ...(playing ? { '@attr': { nowplaying: 'true' } } : { date: { uts: String(s.ts) } }),
 });
 

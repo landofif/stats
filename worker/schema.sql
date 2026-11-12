@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS scrobbles (
   artist TEXT NOT NULL,
   track TEXT NOT NULL,
   album TEXT NOT NULL,
+  image TEXT NOT NULL,   -- cover URL from Last.fm, '' when it has none
   PRIMARY KEY (ts, artist, track)
 ) WITHOUT ROWID;
 

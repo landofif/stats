@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { sync } from '../worker/src/sync.js';
 import { top, trends, status } from '../worker/src/stats.js';
-import { fakeD1, fakeLastfm, scrobble } from './fixtures.js';
+import { fakeD1, fakeLastfm, scrobble, IMG } from './fixtures.js';
 
 const TZ = 'Europe/Zurich';
 const at = (iso) => Date.parse(iso) / 1000;
@@ -28,25 +28,48 @@ test('top artists, tracks and albums are ranked by plays', async () => {
   const db = await dbWith(LISTENS);
   const all = { from: 0, to: NOW, limit: 10 };
   assert.deepEqual(await top(db, { type: 'artists', ...all }), [
-    { artist: 'Alpha', plays: 3 }, { artist: 'Beta', plays: 2 }, { artist: 'Gamma', plays: 1 },
+    { artist: 'Alpha', plays: 3, image: IMG }, { artist: 'Beta', plays: 2, image: IMG }, { artist: 'Gamma', plays: 1, image: IMG },
   ]);
   // Equal plays: the one listened to most recently comes first.
   assert.deepEqual(await top(db, { type: 'tracks', ...all }), [
-    { artist: 'Beta', track: 'Song C', plays: 2 },
-    { artist: 'Alpha', track: 'Song A', plays: 2 },
-    { artist: 'Alpha', track: 'Song B', plays: 1 },
-    { artist: 'Gamma', track: 'Old one', plays: 1 },
+    { artist: 'Beta', track: 'Song C', plays: 2, image: IMG },
+    { artist: 'Alpha', track: 'Song A', plays: 2, image: IMG },
+    { artist: 'Alpha', track: 'Song B', plays: 1, image: IMG },
+    { artist: 'Gamma', track: 'Old one', plays: 1, image: IMG },
   ]);
   // Scrobbles without an album are left out of the album list.
   assert.deepEqual(await top(db, { type: 'albums', ...all }), [
-    { artist: 'Alpha', album: 'First', plays: 3 }, { artist: 'Gamma', album: 'Earlier', plays: 1 },
+    { artist: 'Alpha', album: 'First', plays: 3, image: IMG }, { artist: 'Gamma', album: 'Earlier', plays: 1, image: IMG },
+  ]);
+});
+
+test('top lists carry the cover played most, ignoring plays without one', async () => {
+  const db = await dbWith([
+    scrobble(at('2026-07-01T10:00:00Z'), 'Alpha', 'One', 'Single', 'https://img.example/single.jpg'),
+    scrobble(at('2026-07-02T10:00:00Z'), 'Alpha', 'Two', 'Record', 'https://img.example/record.jpg'),
+    scrobble(at('2026-07-03T10:00:00Z'), 'Alpha', 'Two', 'Record', 'https://img.example/record.jpg'),
+    scrobble(at('2026-07-04T10:00:00Z'), 'Alpha', 'Three', 'Bootleg', ''),
+    scrobble(at('2026-07-05T10:00:00Z'), 'Alpha', 'Three', 'Bootleg', ''),
+    scrobble(at('2026-07-06T10:00:00Z'), 'Alpha', 'Three', 'Bootleg', ''),
+    scrobble(at('2026-07-07T10:00:00Z'), 'Beta', 'Four', 'Tape', ''),
+  ]);
+  const all = { from: 0, to: NOW, limit: 10 };
+  assert.deepEqual(await top(db, { type: 'artists', ...all }), [
+    { artist: 'Alpha', plays: 6, image: 'https://img.example/record.jpg' },
+    { artist: 'Beta', plays: 1, image: '' },
+  ]);
+  assert.deepEqual((await top(db, { type: 'tracks', ...all })).map((t) => [t.track, t.image]), [
+    ['Three', ''], ['Two', 'https://img.example/record.jpg'], ['Four', ''], ['One', 'https://img.example/single.jpg'],
+  ]);
+  assert.deepEqual((await top(db, { type: 'albums', ...all })).map((a) => [a.album, a.image]), [
+    ['Bootleg', ''], ['Record', 'https://img.example/record.jpg'], ['Tape', ''], ['Single', 'https://img.example/single.jpg'],
   ]);
 });
 
 test('top lists respect the period and the limit', async () => {
   const db = await dbWith(LISTENS);
   const july = { from: at('2026-07-01T00:00:00Z'), to: NOW };
-  assert.deepEqual(await top(db, { type: 'artists', ...july, limit: 1 }), [{ artist: 'Alpha', plays: 3 }]);
+  assert.deepEqual(await top(db, { type: 'artists', ...july, limit: 1 }), [{ artist: 'Alpha', plays: 3, image: IMG }]);
   assert.equal((await top(db, { type: 'artists', ...july, limit: 10 })).length, 2);
 });
 

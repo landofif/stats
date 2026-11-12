@@ -31,7 +31,7 @@ All `GET`, JSON, public. `from`/`to` are unix seconds (`from` inclusive, `to` ex
 |---|---|
 | `/summary` | `{count, backfillDone, lastSync, firstTs, playcount, registered}`; `playcount` is live from Last.fm, `null` if that call fails |
 | `/recent?limit=50` | `{nowPlaying, tracks:[{ts, artist, track, album, image}]}`, live from Last.fm |
-| `/top?type=artists\|tracks\|albums&from=&to=&limit=50` | `{items:[{artist, track?, album?, plays}]}` |
+| `/top?type=artists\|tracks\|albums&from=&to=&limit=50` | `{items:[{artist, track?, album?, plays, image}]}` |
 | `/trends?bucket=day\|week\|month&from=&to=` | `{plays, buckets:[{key, plays}], clock}`; `clock[weekday][hour]`, weekday 0 = Sunday |
 
 `/top` and `/trends` are cacheable for 60 s.
@@ -42,6 +42,8 @@ A cron trigger runs `sync()` every minute, with at most 4 Last.fm pages (800 scr
 2. **History**: until `backfill_done`, it walks back from the oldest stored scrobble.
 
 `meta` holds `count`, `backfill_done` and `last_sync`. The count is kept there because `COUNT(*)` would read every row on each app start.
+
+Each row stores `image`, the cover URL Last.fm sent with that scrobble (`''` when it has none). `/top` returns the cover played most in the period: an artist shows their most played album's cover, because Last.fm's API has no artist photos. A new column means clearing and re-importing: drop `scrobbles`, empty `meta`, run `schema.sql` again, and the sync refills it in about half an hour.
 
 Each row also stores `lt`, the scrobble time shifted to wall-clock time in `TZ_NAME`. SQLite has no time zones, so day buckets and the listening clock use `lt`; range filters use the real `ts`.
 

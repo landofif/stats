@@ -47,7 +47,8 @@ Item {
                     rank: i + 1,
                     name: item.track || item.album || item.artist,
                     sub: view.type === "artists" ? "" : item.artist,
-                    plays: item.plays
+                    plays: item.plays,
+                    image: item.image
                 })
             })
         })
@@ -107,10 +108,11 @@ Item {
             required property string name
             required property string sub
             required property int plays
+            required property string image
             readonly property bool hero: rank === 1
             readonly property color ink: hero ? Theme.onAccent : Theme.text
             width: list.width
-            height: hero ? 84 : 56
+            height: hero ? 88 : 56
             color: hero ? Theme.pink : Theme.surface
 
             Rectangle {
@@ -128,8 +130,16 @@ Item {
                     font.weight: Font.DemiBold
                 }
             }
+            Cover {
+                id: cover
+                anchors { left: badge.right; leftMargin: 12; verticalCenter: parent.verticalCenter }
+                width: row.hero ? 64 : 40
+                height: width
+                color: row.hero ? Qt.rgba(0, 0, 0, 0.15) : Theme.surface2
+                source: row.image
+            }
             Column {
-                anchors { left: badge.right; right: playsText.left; margins: 14; verticalCenter: parent.verticalCenter }
+                anchors { left: cover.right; right: playsText.left; margins: 14; verticalCenter: parent.verticalCenter }
                 spacing: 3
                 Text {
                     width: parent.width - (subText.visible ? subText.width + 16 : 0)

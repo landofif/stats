@@ -8,11 +8,17 @@ const TOP = {
 };
 export const TOP_TYPES = Object.keys(TOP);
 
+// `image` is the cover played most in the period, so an artist gets their most played
+// album's. Plays without a cover don't count. The play count is zero-padded in front of
+// the URL so MAX() picks by count; SUBSTR cuts it off again.
 export async function top(db, { type, from, to, limit }) {
   const { cols, where } = TOP[type];
   const { results } = await db.prepare(
-    `SELECT ${cols}, COUNT(*) AS plays FROM scrobbles WHERE ts >= ? AND ts < ? ${where}
-     GROUP BY ${cols} ORDER BY plays DESC, MAX(ts) DESC LIMIT ?`,
+    `SELECT ${cols}, SUM(n) AS plays,
+            COALESCE(SUBSTR(MAX(CASE WHEN image != '' THEN printf('%08d', n) || image END), 9), '') AS image
+     FROM (SELECT ${cols}, image, COUNT(*) AS n, MAX(ts) AS last FROM scrobbles
+           WHERE ts >= ? AND ts < ? ${where} GROUP BY ${cols}, image)
+     GROUP BY ${cols} ORDER BY plays DESC, MAX(last) DESC LIMIT ?`,
   ).bind(from, to, limit).all();
   return results;
 }

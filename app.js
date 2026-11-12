@@ -146,6 +146,7 @@ function showTop() {
     const max = items[0].plays;
     $('#content').replaceChildren(h('div', { class: 'rows top' }, items.map((item, i) => h('div', { class: 'row' },
       h('div', { class: 'rank' }, String(i + 1)),
+      art(item.image),
       h('div', { class: 'text' },
         h('div', { class: 'name' }, item.track ?? item.album ?? item.artist),
         state.type !== 'artists' && h('div', { class: 'sub' }, item.artist),

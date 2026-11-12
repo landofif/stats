@@ -46,7 +46,10 @@ test('scheduled sync fills the database and the routes serve it', async () => {
   assert.equal(summary.body.backfillDone, true);
 
   const top = await get('/top?type=artists');
-  assert.deepEqual(top.body.items, [{ artist: 'Alpha', plays: 2 }, { artist: 'Beta', plays: 1 }]);
+  assert.deepEqual(top.body.items, [
+    { artist: 'Alpha', plays: 2, image: 'https://img.example/large.jpg' },
+    { artist: 'Beta', plays: 1, image: 'https://img.example/large.jpg' },
+  ]);
   assert.match(top.headers.get('cache-control'), /max-age=60/);
 
   const trends = await get(`/trends?bucket=day&from=${minutesAgo(60)}`);

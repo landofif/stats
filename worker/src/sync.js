@@ -7,11 +7,11 @@ const PAGES_PER_RUN = 4;
 
 async function insert(db, tracks, tz) {
   if (!tracks.length) return 0;
-  const rows = tracks.map((t) => [t.ts, t.ts + offsetSeconds(t.ts, tz), t.artist, t.track, t.album]);
+  const rows = tracks.map((t) => [t.ts, t.ts + offsetSeconds(t.ts, tz), t.artist, t.track, t.album, t.image]);
   // One JSON parameter: D1 allows 100 bound parameters, a page needs 1000.
   const res = await db.prepare(
-    `INSERT OR IGNORE INTO scrobbles (ts, lt, artist, track, album)
-     SELECT value->>0, value->>1, value->>2, value->>3, value->>4 FROM json_each(?)`,
+    `INSERT OR IGNORE INTO scrobbles (ts, lt, artist, track, album, image)
+     SELECT value->>0, value->>1, value->>2, value->>3, value->>4, value->>5 FROM json_each(?)`,
   ).bind(JSON.stringify(rows)).run();
   return res.meta.changes;
 }
